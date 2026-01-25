@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
@@ -29,75 +30,95 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-4">
-          <a
-            href="https://github.com/VijayKumar2224"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-indigo-600"
-          >
-            GitHub
-          </a>
+        {/* Desktop Social Links */}
+        <div className="hidden md:flex items-center gap-4">
+          <a href="https://github.com/VijayKumar2224" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+          <a href="https://www.facebook.com/" target="_blank" rel="noreferrer">Facebook</a>
+          <a href="https://wa.me/919370225056" target="_blank" rel="noreferrer">WhatsApp</a>
 
-          <a
-            href="https://www.linkedin.com/"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-indigo-600"
-          >
-            LinkedIn
-          </a>
-
-          <button
-            onClick={toggleTheme}
-            className="px-3 py-1 border rounded"
-          >
+          <button onClick={toggleTheme} className="px-3 py-1 border rounded">
             🌙
           </button>
-
-          <button
-            className="md:hidden text-2xl"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            ☰
-          </button>
         </div>
+
+        {/* Mobile Button */}
+        <button
+          className="md:hidden text-2xl"
+          onClick={() => setIsOpen(true)}
+        >
+          ☰
+        </button>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-900">
-          <ul className="flex flex-col text-center py-4 space-y-4">
-            {menu.map((item) => (
-              <li key={item}>
-                <a
-                  href={`#${item.toLowerCase()}`}
-                  onClick={() => setIsOpen(false)}
+      {/* MOBILE MENU ANIMATION */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="fixed top-0 right-0 w-full h-screen bg-white dark:bg-gray-900 z-50"
+          >
+            <div className="flex justify-between items-center px-6 py-4">
+              <h2 className="text-xl font-bold">Menu</h2>
+              <button
+                className="text-2xl"
+                onClick={() => setIsOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: { staggerChildren: 0.12 },
+                },
+              }}
+              className="flex flex-col items-center mt-10 space-y-6 text-xl"
+            >
+              {menu.map((item) => (
+                <motion.li
+                  key={item}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
                 >
-                  {item}
-                </a>
-              </li>
-            ))}
+                  <a
+                    href={`#${item.toLowerCase()}`}
+                    onClick={() => setIsOpen(false)}
+                    className="hover:text-indigo-600"
+                  >
+                    {item}
+                  </a>
+                </motion.li>
+              ))}
 
-            <a
-              href="https://github.com/VijayKumar2224"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
-
-            <a
-              href="https://www.linkedin.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              LinkedIn
-            </a>
-          </ul>
-        </div>
-      )}
+              {/* Mobile Social Links */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1 },
+                }}
+                className="flex flex-col gap-4 mt-8 text-base"
+              >
+                <a href="https://github.com/VijayKumar2224" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+                <a href="https://www.facebook.com/" target="_blank" rel="noreferrer">Facebook</a>
+                <a href="https://wa.me/919370225056" target="_blank" rel="noreferrer">WhatsApp</a>
+              </motion.div>
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
